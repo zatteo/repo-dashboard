@@ -1,0 +1,12 @@
+{
+  "repositories": [
+    {
+      "owner": "cozy",
+      "repo": "cozy-home"
+    },
+    {
+      "owner": "cozy",
+      "repo": "cozy-drive"
+    }
+  ]
+}
