@@ -67,4 +67,7 @@ export interface PackageData {
   repo_name: string
   dependencies: Record<string, string>
   devDependencies: Record<string, string>
+  nodeVersion: string | null
+  yarnVersion: string | null
+  packageManager: string | null
 }

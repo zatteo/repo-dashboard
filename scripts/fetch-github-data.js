@@ -215,11 +215,31 @@ async function main() {
       try {
         const packageJson = await fetchPackageJson(owner, repo)
 
+        // Extract Node and Yarn versions from engines and packageManager fields
+        // Note: Some repos might have "engine" (singular) instead of "engines" (typo)
+        const engines = packageJson.engines || packageJson.engine || {}
+        const nodeVersion = engines.node || null
+        const yarnVersionFromEngines = engines.yarn || null
+
+        // packageManager field format: "yarn@3.6.0" or "npm@9.0.0"
+        let packageManager = packageJson.packageManager || null
+        let yarnVersionFromPackageManager = null
+
+        if (packageManager && packageManager.startsWith('yarn@')) {
+          yarnVersionFromPackageManager = packageManager.replace('yarn@', '')
+        }
+
+        // Prefer packageManager field over engines.yarn
+        const yarnVersion = yarnVersionFromPackageManager || yarnVersionFromEngines
+
         const packageData = {
           repo_full_name: data.full_name,
           repo_name: data.name,
           dependencies: packageJson.dependencies || {},
-          devDependencies: packageJson.devDependencies || {}
+          devDependencies: packageJson.devDependencies || {},
+          nodeVersion,
+          yarnVersion,
+          packageManager
         }
 
         allPackages.push(packageData)

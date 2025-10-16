@@ -7,6 +7,10 @@
     {
       "owner": "cozy",
       "repo": "cozy-drive"
+    },
+    {
+      "owner": "cozy",
+      "repo": "cozy-contacts"
     }
   ]
 }

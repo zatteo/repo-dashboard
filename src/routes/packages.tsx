@@ -27,6 +27,8 @@ interface TrackedPackage {
 }
 
 const TRACKED_PACKAGES: TrackedPackage[] = [
+  { name: 'node', targetVersion: '20.0.0' },
+  { name: 'yarn', targetVersion: '1.22.0' },
   { name: '@rsbuild/core', targetVersion: '1.5.0' },
   { name: 'jest', targetVersion: '29.7.0' },
   { name: 'prettier' },
@@ -41,9 +43,9 @@ function PackagesPage() {
 
   // Helper function to compare versions
   const isVersionGreaterOrEqual = (version: string, target: string): boolean => {
-    // Remove ^ and ~ prefixes
-    const cleanVersion = version.replace(/^[\^~]/, '')
-    const cleanTarget = target.replace(/^[\^~]/, '')
+    // Remove common version prefixes and operators (^, ~, >=, >, =, v)
+    const cleanVersion = version.replace(/^[\^~>=v]+/, '').trim()
+    const cleanTarget = target.replace(/^[\^~>=v]+/, '').trim()
 
     const versionParts = cleanVersion.split('.').map(Number)
     const targetParts = cleanTarget.split('.').map(Number)
@@ -64,9 +66,17 @@ function PackagesPage() {
     const row: PackageRow = { packageName: pkg.name }
 
     packages.forEach((repoData) => {
-      // Check both dependencies and devDependencies
-      const version =
-        repoData.dependencies[pkg.name] || repoData.devDependencies[pkg.name]
+      let version: string | null = null
+
+      // Handle special cases for node and yarn
+      if (pkg.name === 'node') {
+        version = repoData.nodeVersion
+      } else if (pkg.name === 'yarn') {
+        version = repoData.yarnVersion
+      } else {
+        // Check both dependencies and devDependencies for regular packages
+        version = repoData.dependencies[pkg.name] || repoData.devDependencies[pkg.name]
+      }
 
       row[repoData.repo_name] = version || '-'
     })
