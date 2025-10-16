@@ -9,16 +9,6 @@ import {
 export default function Header() {
   return (
     <aside className="fixed top-0 left-0 h-full w-64 bg-gray-900 text-white shadow-2xl z-50 flex flex-col">
-      <div className="p-6 border-b border-gray-700">
-        <Link to="/">
-          <img
-            src="/tanstack-word-logo-white.svg"
-            alt="TanStack Logo"
-            className="h-10"
-          />
-        </Link>
-      </div>
-
       <nav className="flex-1 p-4 overflow-y-auto">
         <Link
           to="/"
