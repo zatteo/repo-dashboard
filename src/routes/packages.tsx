@@ -21,27 +21,52 @@ interface PackageRow {
   [repoName: string]: string
 }
 
-const TRACKED_PACKAGES = [
-  '@rsbuild/core',
-  'jest',
-  'prettier',
-  'typescript',
-  'react',
-  'cozy-client',
-  'cozy-ui',
+interface TrackedPackage {
+  name: string
+  targetVersion?: string
+}
+
+const TRACKED_PACKAGES: TrackedPackage[] = [
+  { name: '@rsbuild/core', targetVersion: '1.5.0' },
+  { name: 'jest', targetVersion: '29.7.0' },
+  { name: 'prettier' },
+  { name: 'typescript' },
+  { name: 'react' },
+  { name: 'cozy-client' },
+  { name: 'cozy-ui' },
 ]
 
 function PackagesPage() {
   const { packages } = Route.useLoaderData()
 
+  // Helper function to compare versions
+  const isVersionGreaterOrEqual = (version: string, target: string): boolean => {
+    // Remove ^ and ~ prefixes
+    const cleanVersion = version.replace(/^[\^~]/, '')
+    const cleanTarget = target.replace(/^[\^~]/, '')
+
+    const versionParts = cleanVersion.split('.').map(Number)
+    const targetParts = cleanTarget.split('.').map(Number)
+
+    for (let i = 0; i < Math.max(versionParts.length, targetParts.length); i++) {
+      const v = versionParts[i] || 0
+      const t = targetParts[i] || 0
+
+      if (v > t) return true
+      if (v < t) return false
+    }
+
+    return true // Equal
+  }
+
   // Transform data for the table
-  const tableData: PackageRow[] = TRACKED_PACKAGES.map((pkgName) => {
-    const row: PackageRow = { packageName: pkgName }
+  const tableData: PackageRow[] = TRACKED_PACKAGES.map((pkg) => {
+    const row: PackageRow = { packageName: pkg.name }
 
     packages.forEach((repoData) => {
       // Check both dependencies and devDependencies
       const version =
-        repoData.dependencies[pkgName] || repoData.devDependencies[pkgName]
+        repoData.dependencies[pkg.name] || repoData.devDependencies[pkg.name]
 
       row[repoData.repo_name] = version || '-'
     })
@@ -59,18 +84,38 @@ function PackagesPage() {
         <div className="font-semibold text-white">{info.getValue()}</div>
       ),
     }),
+    columnHelper.display({
+      id: 'target',
+      header: 'Target',
+      cell: (info) => {
+        const packageName = info.row.original.packageName
+        const trackedPackage = TRACKED_PACKAGES.find((p) => p.name === packageName)
+        return (
+          <div className="font-mono text-sm text-gray-400">
+            {trackedPackage?.targetVersion || '-'}
+          </div>
+        )
+      },
+    }),
     ...packages.map((repo) =>
       columnHelper.accessor(repo.repo_name, {
         header: repo.repo_name,
         cell: (info) => {
           const value = info.getValue()
           const isInstalled = value !== '-'
+          const packageName = info.row.original.packageName
+          const trackedPackage = TRACKED_PACKAGES.find((p) => p.name === packageName)
+
+          // Determine color based on target version
+          let textColor = isInstalled ? 'text-cyan-400' : 'text-gray-500'
+
+          if (isInstalled && trackedPackage?.targetVersion) {
+            const meetsTarget = isVersionGreaterOrEqual(value, trackedPackage.targetVersion)
+            textColor = meetsTarget ? 'text-green-400' : 'text-red-400'
+          }
+
           return (
-            <div
-              className={`${
-                isInstalled ? 'text-cyan-400' : 'text-gray-500'
-              } font-mono text-sm`}
-            >
+            <div className={`${textColor} font-mono text-sm`}>
               {value}
             </div>
           )
