@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReleasesRouteImport } from './routes/releases'
+import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as CicdRouteImport } from './routes/cicd'
 import { Route as IndexRouteImport } from './routes/index'
 
 const ReleasesRoute = ReleasesRouteImport.update({
   id: '/releases',
   path: '/releases',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PackagesRoute = PackagesRouteImport.update({
+  id: '/packages',
+  path: '/packages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CicdRoute = CicdRouteImport.update({
@@ -32,30 +38,34 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cicd': typeof CicdRoute
+  '/packages': typeof PackagesRoute
   '/releases': typeof ReleasesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cicd': typeof CicdRoute
+  '/packages': typeof PackagesRoute
   '/releases': typeof ReleasesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/cicd': typeof CicdRoute
+  '/packages': typeof PackagesRoute
   '/releases': typeof ReleasesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cicd' | '/releases'
+  fullPaths: '/' | '/cicd' | '/packages' | '/releases'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cicd' | '/releases'
-  id: '__root__' | '/' | '/cicd' | '/releases'
+  to: '/' | '/cicd' | '/packages' | '/releases'
+  id: '__root__' | '/' | '/cicd' | '/packages' | '/releases'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CicdRoute: typeof CicdRoute
+  PackagesRoute: typeof PackagesRoute
   ReleasesRoute: typeof ReleasesRoute
 }
 
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/releases'
       fullPath: '/releases'
       preLoaderRoute: typeof ReleasesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/packages': {
+      id: '/packages'
+      path: '/packages'
+      fullPath: '/packages'
+      preLoaderRoute: typeof PackagesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cicd': {
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CicdRoute: CicdRoute,
+  PackagesRoute: PackagesRoute,
   ReleasesRoute: ReleasesRoute,
 }
 export const routeTree = rootRouteImport

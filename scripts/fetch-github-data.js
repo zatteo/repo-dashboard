@@ -78,10 +78,37 @@ async function fetchWorkflowRuns(owner, repo) {
   return response.json()
 }
 
+async function fetchPackageJson(owner, repo) {
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/package.json`
+  const headers = {
+    'Accept': 'application/vnd.github.v3+json',
+    'User-Agent': 'repo-dashboard'
+  }
+
+  if (GITHUB_TOKEN) {
+    headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`
+  }
+
+  console.log(`Fetching package.json for ${owner}/${repo}...`)
+
+  const response = await fetch(url, { headers })
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch package.json for ${owner}/${repo}: ${response.status} ${response.statusText}`)
+  }
+
+  const data = await response.json()
+
+  // Decode base64 content
+  const content = Buffer.from(data.content, 'base64').toString('utf-8')
+  return JSON.parse(content)
+}
+
 async function main() {
   const results = []
   const allReleases = []
   const allWorkflowRuns = []
+  const allPackages = []
 
   for (const { owner, repo } of config.repositories) {
     try {
@@ -183,6 +210,23 @@ async function main() {
       } catch (error) {
         console.error(`✗ Error fetching workflow runs for ${owner}/${repo}:`, error.message)
       }
+
+      // Fetch package.json for this repository
+      try {
+        const packageJson = await fetchPackageJson(owner, repo)
+
+        const packageData = {
+          repo_full_name: data.full_name,
+          repo_name: data.name,
+          dependencies: packageJson.dependencies || {},
+          devDependencies: packageJson.devDependencies || {}
+        }
+
+        allPackages.push(packageData)
+        console.log(`✓ Successfully fetched package.json for ${owner}/${repo}`)
+      } catch (error) {
+        console.error(`✗ Error fetching package.json for ${owner}/${repo}:`, error.message)
+      }
     } catch (error) {
       console.error(`✗ Error fetching ${owner}/${repo}:`, error.message)
     }
@@ -203,12 +247,16 @@ async function main() {
   const workflowRunsOutputPath = join(outputDir, 'workflow-runs.json')
   writeFileSync(workflowRunsOutputPath, JSON.stringify(allWorkflowRuns, null, 2), 'utf-8')
 
+  const packagesOutputPath = join(outputDir, 'packages.json')
+  writeFileSync(packagesOutputPath, JSON.stringify(allPackages, null, 2), 'utf-8')
+
   const metadataOutputPath = join(outputDir, 'metadata.json')
   writeFileSync(metadataOutputPath, JSON.stringify({ lastUpdated }, null, 2), 'utf-8')
 
   console.log(`\n✓ Saved ${results.length} repositories to ${repoOutputPath}`)
   console.log(`✓ Saved ${allReleases.length} releases to ${releasesOutputPath}`)
   console.log(`✓ Saved ${allWorkflowRuns.length} workflow runs to ${workflowRunsOutputPath}`)
+  console.log(`✓ Saved ${allPackages.length} package.json files to ${packagesOutputPath}`)
   console.log(`Last updated: ${lastUpdated}`)
 }
 

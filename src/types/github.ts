@@ -61,3 +61,10 @@ export interface GitHubWorkflowRun {
   html_url: string
   head_branch: string
 }
+
+export interface PackageData {
+  repo_full_name: string
+  repo_name: string
+  dependencies: Record<string, string>
+  devDependencies: Record<string, string>
+}

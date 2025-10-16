@@ -7,6 +7,7 @@ import {
   X,
   Rocket,
   Activity,
+  Package,
 } from 'lucide-react'
 
 export default function Header() {
@@ -87,6 +88,19 @@ export default function Header() {
           >
             <Activity size={20} />
             <span className="font-medium">CI/CD Analytics</span>
+          </Link>
+
+          <Link
+            to="/packages"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
+            activeProps={{
+              className:
+                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
+            }}
+          >
+            <Package size={20} />
+            <span className="font-medium">Packages</span>
           </Link>
         </nav>
       </aside>
