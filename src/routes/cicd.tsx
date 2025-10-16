@@ -89,7 +89,7 @@ function CICDDashboard() {
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            CI/CD Pipeline Analytics
+            CI/CD
           </h1>
           <p className="text-gray-400 text-lg">
             GitHub Actions workflow run times and performance metrics

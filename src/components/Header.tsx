@@ -43,7 +43,7 @@ export default function Header() {
           }}
         >
           <Activity size={20} />
-          <span className="font-medium">CI/CD Analytics</span>
+          <span className="font-medium">CI/CD</span>
         </Link>
 
         <Link

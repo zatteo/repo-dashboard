@@ -90,7 +90,7 @@ function PackagesPage() {
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Package Versions
+            Packages
           </h1>
           <p className="text-gray-400 text-lg">
             Compare package versions across {packages.length} repositories

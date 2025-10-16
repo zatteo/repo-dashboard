@@ -116,7 +116,7 @@ function Releases() {
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Release History
+            Releases
           </h1>
           <p className="text-gray-400 text-lg">
             Track releases across all monitored repositories
