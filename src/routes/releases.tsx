@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { getReleases } from '../data/releases'
 import { getRepositories } from '../data/repositories'
-import { GitBranch, Tag } from 'lucide-react'
+import { GitBranch, Tag, Calendar, AlertCircle } from 'lucide-react'
 import type { GitHubRelease } from '../types/github'
 import {
   BarChart,
@@ -50,6 +50,19 @@ function Releases() {
     },
     {} as Record<string, GitHubRelease[]>
   )
+
+  // Get the last stable release for a repository
+  const getLastStableRelease = (repoReleases: GitHubRelease[]) => {
+    return repoReleases.find((r) => !r.prerelease)
+  }
+
+  // Check if a date is more than 1 month old
+  const isMoreThanOneMonthOld = (dateString: string) => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate())
+    return date < oneMonthAgo
+  }
 
   // Calculate monthly statistics for each repo
   const getMonthlyStats = (repoReleases: GitHubRelease[]): MonthlyStats[] => {
@@ -126,6 +139,7 @@ function Releases() {
         {repositories.map((repo) => {
           const repoReleases = releasesByRepo[repo.full_name] || []
           const monthlyStats = getMonthlyStats(repoReleases)
+          const lastStableRelease = getLastStableRelease(repoReleases)
 
           if (repoReleases.length === 0) return null
 
@@ -145,7 +159,7 @@ function Releases() {
                     {repo.full_name}
                   </h2>
                 </div>
-                <div className="flex items-center gap-6 text-gray-400">
+                <div className="flex items-center gap-6 text-gray-400 flex-wrap">
                   <div className="flex items-center gap-2">
                     <GitBranch className="w-5 h-5" />
                     <span>
@@ -160,6 +174,35 @@ function Releases() {
                       releases
                     </span>
                   </div>
+                  {lastStableRelease && (
+                    <div className="flex items-center gap-2">
+                      {isMoreThanOneMonthOld(
+                        lastStableRelease.published_at || lastStableRelease.created_at
+                      ) ? (
+                        <AlertCircle className="w-5 h-5 text-red-400" />
+                      ) : (
+                        <Calendar className="w-5 h-5" />
+                      )}
+                      <span
+                        className={
+                          isMoreThanOneMonthOld(
+                            lastStableRelease.published_at || lastStableRelease.created_at
+                          )
+                            ? 'text-red-400'
+                            : ''
+                        }
+                      >
+                        Last stable:{' '}
+                        {new Date(
+                          lastStableRelease.published_at || lastStableRelease.created_at
+                        ).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
