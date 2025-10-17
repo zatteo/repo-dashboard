@@ -220,50 +220,6 @@ function CICDDashboard() {
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-
-              {/* Recent Runs */}
-              <div className="mt-8">
-                <h3 className="text-xl font-semibold text-white mb-4">
-                  Recent Workflow Runs
-                </h3>
-                <div className="space-y-2">
-                  {repoRuns.slice(-10).reverse().map((run) => (
-                    <div
-                      key={run.id}
-                      className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        {run.conclusion === 'success' ? (
-                          <CheckCircle className="w-5 h-5 text-green-400" />
-                        ) : run.conclusion === 'failure' ? (
-                          <XCircle className="w-5 h-5 text-red-400" />
-                        ) : (
-                          <AlertCircle className="w-5 h-5 text-yellow-400" />
-                        )}
-                        <div>
-                          <p className="text-white font-medium">{run.name}</p>
-                          <p className="text-sm text-gray-400">
-                            #{run.run_number} • {run.head_branch}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-white font-medium">
-                          {formatDuration(run.duration_seconds)}
-                        </p>
-                        <p className="text-sm text-gray-400">
-                          {new Date(run.created_at).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           )
         })}
