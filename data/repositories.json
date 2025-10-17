@@ -10,7 +10,35 @@
     },
     {
       "owner": "cozy",
+      "repo": "cozy-notes"
+    },
+    {
+      "owner": "cozy",
+      "repo": "cozy-settings"
+    },
+    {
+      "owner": "cozy",
       "repo": "cozy-contacts"
+    },
+    {
+      "owner": "cozy",
+      "repo": "cozy-pass-web"
+    },
+    {
+      "owner": "cozy",
+      "repo": "cozy-photos"
+    },
+    {
+      "owner": "cozy",
+      "repo": "cozy-store"
+    },
+    {
+      "owner": "cozy",
+      "repo": "cozy-twakechat"
+    },
+    {
+      "owner": "cozy",
+      "repo": "cozy-twakemail"
     }
   ]
 }
