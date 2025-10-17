@@ -56,9 +56,8 @@ async function fetchReleases(owner, repo) {
   return response.json()
 }
 
-async function fetchWorkflowRuns(owner, repo) {
-  // Filter for CI/CD workflow on master branch directly in the API call
-  const url = `https://api.github.com/repos/${owner}/${repo}/actions/runs?per_page=100&status=completed&branch=master`
+async function fetchWorkflows(owner, repo) {
+  const url = `https://api.github.com/repos/${owner}/${repo}/actions/workflows`
   const headers = {
     'Accept': 'application/vnd.github.v3+json',
     'User-Agent': 'repo-dashboard'
@@ -68,15 +67,62 @@ async function fetchWorkflowRuns(owner, repo) {
     headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`
   }
 
-  console.log(`Fetching workflow runs for ${owner}/${repo}...`)
-
   const response = await fetch(url, { headers })
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch workflow runs for ${owner}/${repo}: ${response.status} ${response.statusText}`)
+    throw new Error(`Failed to fetch workflows for ${owner}/${repo}: ${response.status} ${response.statusText}`)
   }
 
   return response.json()
+}
+
+async function fetchWorkflowRuns(owner, repo, workflowId, maxRuns = 500) {
+  // Fetch workflow runs for a specific workflow on master branch with pagination
+  const headers = {
+    'Accept': 'application/vnd.github.v3+json',
+    'User-Agent': 'repo-dashboard'
+  }
+
+  if (GITHUB_TOKEN) {
+    headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`
+  }
+
+  const allRuns = []
+  const perPage = 100 // GitHub API max per page
+  let page = 1
+  let hasMorePages = true
+
+  console.log(`Fetching workflow runs for ${owner}/${repo} (workflow ${workflowId})...`)
+
+  while (hasMorePages && allRuns.length < maxRuns) {
+    const url = `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflowId}/runs?per_page=${perPage}&page=${page}&status=completed&branch=master`
+
+    const response = await fetch(url, { headers })
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch workflow runs for ${owner}/${repo}: ${response.status} ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    const runs = data.workflow_runs || []
+
+    if (runs.length === 0) {
+      hasMorePages = false
+    } else {
+      allRuns.push(...runs)
+      page++
+
+      // Stop if we got fewer than perPage results (last page)
+      if (runs.length < perPage) {
+        hasMorePages = false
+      }
+    }
+  }
+
+  // Trim to maxRuns if we fetched more
+  const trimmedRuns = allRuns.slice(0, maxRuns)
+
+  return { workflow_runs: trimmedRuns }
 }
 
 async function fetchPackageJson(owner, repo) {
@@ -173,39 +219,48 @@ async function main() {
 
       // Fetch workflow runs for this repository
       try {
-        const workflowRunsResponse = await fetchWorkflowRuns(owner, repo)
-        const runs = workflowRunsResponse.workflow_runs || []
+        // First, get the list of workflows to find the CI/CD workflow ID
+        const workflowsResponse = await fetchWorkflows(owner, repo)
+        const workflows = workflowsResponse.workflows || []
 
-        // Filter for CI/CD workflow only (branch already filtered in API call)
-        const filteredRuns = runs.filter(run => run.name === 'CI/CD')
+        // Find the CI/CD workflow
+        const cicdWorkflow = workflows.find(w => w.name === 'CI/CD')
 
-        const workflowData = filteredRuns.map(run => {
-          // Calculate duration in seconds
-          const startedAt = new Date(run.run_started_at || run.created_at)
-          const updatedAt = new Date(run.updated_at)
-          const durationSeconds = (updatedAt - startedAt) / 1000
+        if (!cicdWorkflow) {
+          console.log(`⚠ No CI/CD workflow found for ${owner}/${repo}`)
+        } else {
+          // Fetch runs for the specific CI/CD workflow
+          const workflowRunsResponse = await fetchWorkflowRuns(owner, repo, cicdWorkflow.id)
+          const runs = workflowRunsResponse.workflow_runs || []
 
-          return {
-            id: run.id,
-            repo_full_name: data.full_name,
-            repo_name: data.name,
-            name: run.name,
-            workflow_id: run.workflow_id,
-            status: run.status,
-            conclusion: run.conclusion,
-            run_number: run.run_number,
-            event: run.event,
-            created_at: run.created_at,
-            updated_at: run.updated_at,
-            run_started_at: run.run_started_at,
-            duration_seconds: durationSeconds,
-            html_url: run.html_url,
-            head_branch: run.head_branch
-          }
-        })
+          const workflowData = runs.map(run => {
+            // Calculate duration in seconds
+            const startedAt = new Date(run.run_started_at || run.created_at)
+            const updatedAt = new Date(run.updated_at)
+            const durationSeconds = (updatedAt - startedAt) / 1000
 
-        allWorkflowRuns.push(...workflowData)
-        console.log(`✓ Successfully fetched ${filteredRuns.length} CI/CD workflow runs on master for ${owner}/${repo}`)
+            return {
+              id: run.id,
+              repo_full_name: data.full_name,
+              repo_name: data.name,
+              name: run.name,
+              workflow_id: run.workflow_id,
+              status: run.status,
+              conclusion: run.conclusion,
+              run_number: run.run_number,
+              event: run.event,
+              created_at: run.created_at,
+              updated_at: run.updated_at,
+              run_started_at: run.run_started_at,
+              duration_seconds: durationSeconds,
+              html_url: run.html_url,
+              head_branch: run.head_branch
+            }
+          })
+
+          allWorkflowRuns.push(...workflowData)
+          console.log(`✓ Successfully fetched ${runs.length} CI/CD workflow runs on master for ${owner}/${repo}`)
+        }
       } catch (error) {
         console.error(`✗ Error fetching workflow runs for ${owner}/${repo}:`, error.message)
       }
