@@ -26,10 +26,9 @@ export const Route = createFileRoute('/cicd')({
 })
 
 interface RunDataPoint {
-  date: string
-  duration: number
-  runNumber: number
-  conclusion: string
+  month: string
+  avgDuration: number
+  runCount: number
 }
 
 function CICDDashboard() {
@@ -49,17 +48,60 @@ function CICDDashboard() {
     {} as Record<string, GitHubWorkflowRun[]>
   )
 
-  // Prepare line chart data
+  // Prepare monthly average chart data
   const getChartData = (runs: GitHubWorkflowRun[]): RunDataPoint[] => {
-    return runs.slice(-50).map((run) => ({
-      date: new Date(run.created_at).toLocaleDateString('en-US', {
+    // Group runs by month
+    const monthlyData = new Map<string, { total: number; count: number }>()
+
+    runs.forEach((run) => {
+      const date = new Date(run.created_at)
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+
+      if (!monthlyData.has(monthKey)) {
+        monthlyData.set(monthKey, { total: 0, count: 0 })
+      }
+
+      const monthData = monthlyData.get(monthKey)!
+      monthData.total += run.duration_seconds
+      monthData.count += 1
+    })
+
+    // Generate all months from September 2024 to current month
+    const startDate = new Date(2024, 8, 1) // September 2024
+    const currentDate = new Date()
+    const chartData: RunDataPoint[] = []
+
+    let currentMonth = new Date(startDate)
+    while (currentMonth <= currentDate) {
+      const monthKey = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}`
+      const monthLabel = currentMonth.toLocaleDateString('en-US', {
         month: 'short',
-        day: 'numeric',
-      }),
-      duration: Math.round(run.duration_seconds / 60), // Convert to minutes
-      runNumber: run.run_number,
-      conclusion: run.conclusion || 'unknown',
-    }))
+        year: 'numeric',
+      })
+
+      const data = monthlyData.get(monthKey)
+
+      if (data && data.count > 0) {
+        // Month has data
+        chartData.push({
+          month: monthLabel,
+          avgDuration: Math.round((data.total / data.count / 60) * 100) / 100, // Average in minutes
+          runCount: data.count,
+        })
+      } else {
+        // Month has no data - add null values so line skips this month
+        chartData.push({
+          month: monthLabel,
+          avgDuration: null as any,
+          runCount: 0,
+        })
+      }
+
+      // Move to next month
+      currentMonth.setMonth(currentMonth.getMonth() + 1)
+    }
+
+    return chartData
   }
 
   // Calculate statistics
@@ -163,8 +205,8 @@ function CICDDashboard() {
 
               {/* Line Chart */}
               <div>
-                <h3 className="text-xl font-semibold text-white mb-4">
-                  Workflow Run Duration (Last 50 Runs)
+                <h3 className="text-xl font-semibold text-white dark:text-white text-gray-900 mb-4">
+                  Average Workflow Duration by Month
                 </h3>
                 <ResponsiveContainer width="100%" height={400}>
                   <LineChart
@@ -173,7 +215,7 @@ function CICDDashboard() {
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                     <XAxis
-                      dataKey="date"
+                      dataKey="month"
                       stroke="#9CA3AF"
                       tick={{ fill: '#9CA3AF' }}
                       angle={-45}
@@ -184,11 +226,14 @@ function CICDDashboard() {
                       stroke="#9CA3AF"
                       tick={{ fill: '#9CA3AF' }}
                       label={{
-                        value: 'Duration (minutes)',
+                        value: 'Average Duration (minutes)',
                         angle: -90,
                         position: 'insideLeft',
                         fill: '#9CA3AF',
                       }}
+                      domain={[0, 10]}
+                      allowDecimals={true}
+                      tickFormatter={(value) => value.toFixed(1)}
                     />
                     <Tooltip
                       contentStyle={{
@@ -198,8 +243,11 @@ function CICDDashboard() {
                         color: '#F3F4F6',
                       }}
                       formatter={(value: number, name: string) => {
-                        if (name === 'duration') {
-                          return [`${value} min`, 'Duration']
+                        if (name === 'avgDuration') {
+                          return [`${value.toFixed(2)} min`, 'Avg Duration']
+                        }
+                        if (name === 'runCount') {
+                          return [value, 'Run Count']
                         }
                         return [value, name]
                       }}
@@ -210,12 +258,13 @@ function CICDDashboard() {
                     />
                     <Line
                       type="monotone"
-                      dataKey="duration"
+                      dataKey="avgDuration"
                       stroke="#06B6D4"
                       strokeWidth={2}
                       dot={{ fill: '#06B6D4', r: 4 }}
                       activeDot={{ r: 6 }}
-                      name="Duration (min)"
+                      connectNulls={true}
+                      name="Avg Duration (min)"
                     />
                   </LineChart>
                 </ResponsiveContainer>
