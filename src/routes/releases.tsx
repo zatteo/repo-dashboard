@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { getReleases } from '../data/releases'
 import { getRepositories } from '../data/repositories'
-import { GitBranch, Tag, Calendar, AlertCircle } from 'lucide-react'
+import { Calendar, AlertCircle } from 'lucide-react'
 import type { GitHubRelease } from '../types/github'
 import {
   BarChart,
@@ -159,51 +159,35 @@ function Releases() {
                     {repo.full_name}
                   </h2>
                 </div>
-                <div className="flex items-center gap-6 text-gray-400 flex-wrap">
-                  <div className="flex items-center gap-2">
-                    <GitBranch className="w-5 h-5" />
-                    <span>
-                      {repoReleases.filter((r) => !r.prerelease).length} stable
-                      releases
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Tag className="w-5 h-5" />
-                    <span>
-                      {repoReleases.filter((r) => r.prerelease).length} beta
-                      releases
-                    </span>
-                  </div>
-                  {lastStableRelease && (
-                    <div className="flex items-center gap-2">
-                      {isMoreThanOneMonthOld(
-                        lastStableRelease.published_at || lastStableRelease.created_at
-                      ) ? (
-                        <AlertCircle className="w-5 h-5 text-red-400" />
-                      ) : (
-                        <Calendar className="w-5 h-5" />
-                      )}
-                      <span
-                        className={
-                          isMoreThanOneMonthOld(
-                            lastStableRelease.published_at || lastStableRelease.created_at
-                          )
-                            ? 'text-red-400'
-                            : ''
-                        }
-                      >
-                        Last stable:{' '}
-                        {new Date(
+                {lastStableRelease && (
+                  <div className="flex items-center gap-2 text-gray-400 dark:text-gray-400 text-gray-600">
+                    {isMoreThanOneMonthOld(
+                      lastStableRelease.published_at || lastStableRelease.created_at
+                    ) ? (
+                      <AlertCircle className="w-5 h-5 text-red-400" />
+                    ) : (
+                      <Calendar className="w-5 h-5" />
+                    )}
+                    <span
+                      className={
+                        isMoreThanOneMonthOld(
                           lastStableRelease.published_at || lastStableRelease.created_at
-                        ).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
-                      </span>
-                    </div>
-                  )}
-                </div>
+                        )
+                          ? 'text-red-400'
+                          : ''
+                      }
+                    >
+                      Last stable release:{' '}
+                      {new Date(
+                        lastStableRelease.published_at || lastStableRelease.created_at
+                      ).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Monthly Bar Chart */}
