@@ -57,7 +57,8 @@ async function fetchReleases(owner, repo) {
 }
 
 async function fetchWorkflowRuns(owner, repo) {
-  const url = `https://api.github.com/repos/${owner}/${repo}/actions/runs?per_page=100&status=completed`
+  // Filter for CI/CD workflow on master branch directly in the API call
+  const url = `https://api.github.com/repos/${owner}/${repo}/actions/runs?per_page=100&status=completed&branch=master`
   const headers = {
     'Accept': 'application/vnd.github.v3+json',
     'User-Agent': 'repo-dashboard'
@@ -175,10 +176,8 @@ async function main() {
         const workflowRunsResponse = await fetchWorkflowRuns(owner, repo)
         const runs = workflowRunsResponse.workflow_runs || []
 
-        // Filter for CI/CD workflow on master branch only
-        const filteredRuns = runs.filter(run =>
-          run.name === 'CI/CD' && run.head_branch === 'master'
-        )
+        // Filter for CI/CD workflow only (branch already filtered in API call)
+        const filteredRuns = runs.filter(run => run.name === 'CI/CD')
 
         const workflowData = filteredRuns.map(run => {
           // Calculate duration in seconds
