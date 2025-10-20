@@ -34,8 +34,8 @@ export function ReleaseChart({ data }: ReleaseChartProps) {
 					}}
 				/>
 				<Legend wrapperStyle={{ color: '#9CA3AF' }} iconType="circle" />
-				<Bar dataKey="stable" fill="#22C55E" name="Stable" />
 				<Bar dataKey="beta" fill="#EAB308" name="Beta" />
+				<Bar dataKey="stable" fill="#22C55E" name="Stable" />
 			</BarChart>
 		</ResponsiveContainer>
 	)
