@@ -56,6 +56,49 @@ function Releases() {
     return repoReleases.find((r) => !r.prerelease)
   }
 
+  // Get the latest stable version
+  const getLatestStableVersion = (repoReleases: GitHubRelease[]): string | null => {
+    const stableRelease = repoReleases.find((r) => !r.prerelease)
+    return stableRelease?.tag_name || null
+  }
+
+  // Get the latest beta version (only if not superseded by stable)
+  const getLatestBetaVersion = (repoReleases: GitHubRelease[]): string | null => {
+    const latestBeta = repoReleases.find((r) => r.prerelease)
+    if (!latestBeta) return null
+
+    // Parse version numbers to check if beta is superseded
+    const betaVersion = latestBeta.tag_name
+    const stableVersion = getLatestStableVersion(repoReleases)
+
+    if (!stableVersion) return betaVersion
+
+    // Extract base version from beta (e.g., "1.49.0-beta.1" -> "1.49.0")
+    const betaMatch = betaVersion.match(/^(\d+\.\d+\.\d+)/)
+    const stableMatch = stableVersion.match(/^(\d+\.\d+\.\d+)/)
+
+    if (!betaMatch || !stableMatch) return betaVersion
+
+    const betaBase = betaMatch[1]
+    const stableBase = stableMatch[1]
+
+    // Compare version strings: if beta base <= stable base, beta is superseded
+    const betaParts = betaBase.split('.').map(Number)
+    const stableParts = stableBase.split('.').map(Number)
+
+    for (let i = 0; i < 3; i++) {
+      if (betaParts[i] > stableParts[i]) {
+        return betaVersion // Beta is newer
+      }
+      if (betaParts[i] < stableParts[i]) {
+        return null // Beta is superseded
+      }
+    }
+
+    // Same base version means beta is superseded by stable
+    return null
+  }
+
   // Check if a date is more than 1 month old
   const isMoreThanOneMonthOld = (dateString: string) => {
     const date = new Date(dateString)
@@ -140,6 +183,8 @@ function Releases() {
           const repoReleases = releasesByRepo[repo.full_name] || []
           const monthlyStats = getMonthlyStats(repoReleases)
           const lastStableRelease = getLastStableRelease(repoReleases)
+          const latestStableVersion = getLatestStableVersion(repoReleases)
+          const latestBetaVersion = getLatestBetaVersion(repoReleases)
 
           if (repoReleases.length === 0) return null
 
@@ -159,6 +204,27 @@ function Releases() {
                     {repo.full_name}
                   </h2>
                 </div>
+
+                {/* Version Display */}
+                <div className="flex items-center gap-4 mb-3">
+                  {latestStableVersion && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-400">Latest Stable:</span>
+                      <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm font-semibold">
+                        {latestStableVersion}
+                      </span>
+                    </div>
+                  )}
+                  {latestBetaVersion && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-400">Latest Beta:</span>
+                      <span className="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-sm font-semibold">
+                        {latestBetaVersion}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
                 {lastStableRelease && (
                   <div className="flex items-center gap-2 text-gray-400 dark:text-gray-400 text-gray-600">
                     {isMoreThanOneMonthOld(
