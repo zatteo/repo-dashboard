@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { getReleases } from '../data/releases'
 import { getRepositories } from '../data/repositories'
-import { Calendar, AlertCircle } from 'lucide-react'
 import type { GitHubRelease } from '../types/github'
 import {
   BarChart,
@@ -50,11 +49,6 @@ function Releases() {
     },
     {} as Record<string, GitHubRelease[]>
   )
-
-  // Get the last stable release for a repository
-  const getLastStableRelease = (repoReleases: GitHubRelease[]) => {
-    return repoReleases.find((r) => !r.prerelease)
-  }
 
   // Get the latest stable release
   const getLatestStableRelease = (repoReleases: GitHubRelease[]): GitHubRelease | null => {
@@ -201,7 +195,6 @@ function Releases() {
         {repositories.map((repo) => {
           const repoReleases = releasesByRepo[repo.full_name] || []
           const monthlyStats = getMonthlyStats(repoReleases)
-          const lastStableRelease = getLastStableRelease(repoReleases)
           const latestStableRelease = getLatestStableRelease(repoReleases)
           const latestBetaRelease = getLatestBetaRelease(repoReleases)
 
@@ -277,36 +270,6 @@ function Releases() {
                     </div>
                   )}
                 </div>
-
-                {lastStableRelease && (
-                  <div className="flex items-center gap-2 text-gray-400 dark:text-gray-400 text-gray-600">
-                    {isMoreThanOneMonthOld(
-                      lastStableRelease.published_at || lastStableRelease.created_at
-                    ) ? (
-                      <AlertCircle className="w-5 h-5 text-red-400" />
-                    ) : (
-                      <Calendar className="w-5 h-5" />
-                    )}
-                    <span
-                      className={
-                        isMoreThanOneMonthOld(
-                          lastStableRelease.published_at || lastStableRelease.created_at
-                        )
-                          ? 'text-red-400'
-                          : ''
-                      }
-                    >
-                      Last stable release:{' '}
-                      {new Date(
-                        lastStableRelease.published_at || lastStableRelease.created_at
-                      ).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
-                    </span>
-                  </div>
-                )}
               </div>
 
               {/* Monthly Bar Chart */}
