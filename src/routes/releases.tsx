@@ -56,14 +56,19 @@ function Releases() {
     return repoReleases.find((r) => !r.prerelease)
   }
 
+  // Get the latest stable release
+  const getLatestStableRelease = (repoReleases: GitHubRelease[]): GitHubRelease | null => {
+    return repoReleases.find((r) => !r.prerelease) || null
+  }
+
   // Get the latest stable version
   const getLatestStableVersion = (repoReleases: GitHubRelease[]): string | null => {
-    const stableRelease = repoReleases.find((r) => !r.prerelease)
+    const stableRelease = getLatestStableRelease(repoReleases)
     return stableRelease?.tag_name || null
   }
 
-  // Get the latest beta version (only if not superseded by stable)
-  const getLatestBetaVersion = (repoReleases: GitHubRelease[]): string | null => {
+  // Get the latest beta release (only if not superseded by stable)
+  const getLatestBetaRelease = (repoReleases: GitHubRelease[]): GitHubRelease | null => {
     const latestBeta = repoReleases.find((r) => r.prerelease)
     if (!latestBeta) return null
 
@@ -71,13 +76,13 @@ function Releases() {
     const betaVersion = latestBeta.tag_name
     const stableVersion = getLatestStableVersion(repoReleases)
 
-    if (!stableVersion) return betaVersion
+    if (!stableVersion) return latestBeta
 
     // Extract base version from beta (e.g., "1.49.0-beta.1" -> "1.49.0")
     const betaMatch = betaVersion.match(/^(\d+\.\d+\.\d+)/)
     const stableMatch = stableVersion.match(/^(\d+\.\d+\.\d+)/)
 
-    if (!betaMatch || !stableMatch) return betaVersion
+    if (!betaMatch || !stableMatch) return latestBeta
 
     const betaBase = betaMatch[1]
     const stableBase = stableMatch[1]
@@ -88,7 +93,7 @@ function Releases() {
 
     for (let i = 0; i < 3; i++) {
       if (betaParts[i] > stableParts[i]) {
-        return betaVersion // Beta is newer
+        return latestBeta // Beta is newer
       }
       if (betaParts[i] < stableParts[i]) {
         return null // Beta is superseded
@@ -99,12 +104,26 @@ function Releases() {
     return null
   }
 
+  // Get the latest beta version (only if not superseded by stable)
+  const getLatestBetaVersion = (repoReleases: GitHubRelease[]): string | null => {
+    const betaRelease = getLatestBetaRelease(repoReleases)
+    return betaRelease?.tag_name || null
+  }
+
   // Check if a date is more than 1 month old
   const isMoreThanOneMonthOld = (dateString: string) => {
     const date = new Date(dateString)
     const now = new Date()
     const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate())
     return date < oneMonthAgo
+  }
+
+  // Check if a date is more than 1 week old
+  const isMoreThanOneWeekOld = (dateString: string) => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+    return date < oneWeekAgo
   }
 
   // Calculate monthly statistics for each repo
@@ -183,8 +202,8 @@ function Releases() {
           const repoReleases = releasesByRepo[repo.full_name] || []
           const monthlyStats = getMonthlyStats(repoReleases)
           const lastStableRelease = getLastStableRelease(repoReleases)
-          const latestStableVersion = getLatestStableVersion(repoReleases)
-          const latestBetaVersion = getLatestBetaVersion(repoReleases)
+          const latestStableRelease = getLatestStableRelease(repoReleases)
+          const latestBetaRelease = getLatestBetaRelease(repoReleases)
 
           if (repoReleases.length === 0) return null
 
@@ -207,19 +226,53 @@ function Releases() {
 
                 {/* Version Display */}
                 <div className="flex items-center gap-4 mb-3">
-                  {latestStableVersion && (
+                  {latestStableRelease && (
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-gray-400">Latest Stable:</span>
                       <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm font-semibold">
-                        {latestStableVersion}
+                        {latestStableRelease.tag_name}
+                      </span>
+                      <span
+                        className={`text-sm ${
+                          isMoreThanOneMonthOld(
+                            latestStableRelease.published_at || latestStableRelease.created_at
+                          ) && !latestBetaRelease
+                            ? 'text-red-400'
+                            : 'text-gray-500'
+                        }`}
+                      >
+                        {new Date(
+                          latestStableRelease.published_at || latestStableRelease.created_at
+                        ).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
                       </span>
                     </div>
                   )}
-                  {latestBetaVersion && (
+                  {latestBetaRelease && (
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-gray-400">Latest Beta:</span>
                       <span className="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-sm font-semibold">
-                        {latestBetaVersion}
+                        {latestBetaRelease.tag_name}
+                      </span>
+                      <span
+                        className={`text-sm ${
+                          isMoreThanOneWeekOld(
+                            latestBetaRelease.published_at || latestBetaRelease.created_at
+                          )
+                            ? 'text-red-400'
+                            : 'text-gray-500'
+                        }`}
+                      >
+                        {new Date(
+                          latestBetaRelease.published_at || latestBetaRelease.created_at
+                        ).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
                       </span>
                     </div>
                   )}
