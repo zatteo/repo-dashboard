@@ -1,20 +1,18 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { createServerFn } from '@tanstack/react-start';
-
 export interface Metadata {
-  lastUpdated: string | null;
+	lastUpdated: string | null;
 }
 
-export const getMetadata = createServerFn({
-  method: 'GET',
-}).handler(async (): Promise<Metadata> => {
-  try {
-    const cachePath = join(process.cwd(), 'data', 'cache', 'metadata.json');
-    const data = readFileSync(cachePath, 'utf-8');
-    return JSON.parse(data) as Metadata;
-  } catch (error) {
-    console.error('Error reading metadata:', error);
-    return { lastUpdated: null };
-  }
-});
+const DATA_BASE_URL = import.meta.env.BASE_URL || '/';
+
+export async function getMetadata(): Promise<Metadata> {
+	try {
+		const response = await fetch(`${DATA_BASE_URL}data/cache/metadata.json`);
+		if (!response.ok) {
+			throw new Error(`Failed to fetch metadata: ${response.status}`);
+		}
+		return (await response.json()) as Metadata;
+	} catch (error) {
+		console.error('Error reading metadata:', error);
+		return { lastUpdated: null };
+	}
+}

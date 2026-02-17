@@ -1,17 +1,16 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { createServerFn } from '@tanstack/react-start';
 import type { GitHubRepository } from '../types/github';
 
-export const getRepositories = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  try {
-    const cachePath = join(process.cwd(), 'data', 'cache', 'repositories.json');
-    const data = readFileSync(cachePath, 'utf-8');
-    return JSON.parse(data) as GitHubRepository[];
-  } catch (error) {
-    console.error('Error reading cached repository data:', error);
-    return [];
-  }
-});
+const DATA_BASE_URL = import.meta.env.BASE_URL || '/';
+
+export async function getRepositories(): Promise<GitHubRepository[]> {
+	try {
+		const response = await fetch(`${DATA_BASE_URL}data/cache/repositories.json`);
+		if (!response.ok) {
+			throw new Error(`Failed to fetch repositories: ${response.status}`);
+		}
+		return (await response.json()) as GitHubRepository[];
+	} catch (error) {
+		console.error('Error reading cached repository data:', error);
+		return [];
+	}
+}

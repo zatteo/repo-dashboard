@@ -306,8 +306,8 @@ async function main() {
     }
   }
 
-  // Save the results
-  const outputDir = join(rootDir, 'data', 'cache')
+  // Save the results to public folder for static hosting
+  const outputDir = join(rootDir, 'public', 'data', 'cache')
   mkdirSync(outputDir, { recursive: true })
 
   const lastUpdated = new Date().toISOString()

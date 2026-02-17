@@ -1,0 +1,300 @@
+[
+  {
+    "id": 87829743,
+    "name": "cozy-home",
+    "full_name": "linagora/cozy-home",
+    "description": "A cozy client application to configure and run cozy konnectors",
+    "html_url": "https://github.com/linagora/cozy-home",
+    "homepage": "",
+    "language": "JavaScript",
+    "stargazers_count": 52,
+    "watchers_count": 52,
+    "forks_count": 26,
+    "open_issues_count": 28,
+    "created_at": "2017-04-10T15:52:53Z",
+    "updated_at": "2026-02-04T11:07:38Z",
+    "pushed_at": "2026-02-12T16:53:37Z",
+    "topics": [],
+    "license": {
+      "key": "agpl-3.0",
+      "name": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "url": "https://api.github.com/licenses/agpl-3.0",
+      "node_id": "MDc6TGljZW5zZTE="
+    },
+    "owner": {
+      "login": "linagora",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1230365?v=4",
+      "html_url": "https://github.com/linagora"
+    }
+  },
+  {
+    "id": 76205055,
+    "name": "twake-drive",
+    "full_name": "linagora/twake-drive",
+    "description": "Twake Drive Web App ",
+    "html_url": "https://github.com/linagora/twake-drive",
+    "homepage": "https://twake-drive.com",
+    "language": "JavaScript",
+    "stargazers_count": 645,
+    "watchers_count": 645,
+    "forks_count": 126,
+    "open_issues_count": 58,
+    "created_at": "2016-12-11T22:51:29Z",
+    "updated_at": "2026-02-15T18:27:35Z",
+    "pushed_at": "2026-02-12T12:02:21Z",
+    "topics": [
+      "drive",
+      "file-manager"
+    ],
+    "license": {
+      "key": "agpl-3.0",
+      "name": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "url": "https://api.github.com/licenses/agpl-3.0",
+      "node_id": "MDc6TGljZW5zZTE="
+    },
+    "owner": {
+      "login": "linagora",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1230365?v=4",
+      "html_url": "https://github.com/linagora"
+    }
+  },
+  {
+    "id": 177174760,
+    "name": "cozy-notes",
+    "full_name": "linagora/cozy-notes",
+    "description": null,
+    "html_url": "https://github.com/linagora/cozy-notes",
+    "homepage": null,
+    "language": "TypeScript",
+    "stargazers_count": 10,
+    "watchers_count": 10,
+    "forks_count": 9,
+    "open_issues_count": 30,
+    "created_at": "2019-03-22T16:29:39Z",
+    "updated_at": "2026-02-12T13:00:38Z",
+    "pushed_at": "2026-02-12T13:00:20Z",
+    "topics": [],
+    "license": {
+      "key": "agpl-3.0",
+      "name": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "url": "https://api.github.com/licenses/agpl-3.0",
+      "node_id": "MDc6TGljZW5zZTE="
+    },
+    "owner": {
+      "login": "linagora",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1230365?v=4",
+      "html_url": "https://github.com/linagora"
+    }
+  },
+  {
+    "id": 77903261,
+    "name": "cozy-settings",
+    "full_name": "linagora/cozy-settings",
+    "description": "Settings app for Cozy Cloud",
+    "html_url": "https://github.com/linagora/cozy-settings",
+    "homepage": null,
+    "language": "JavaScript",
+    "stargazers_count": 4,
+    "watchers_count": 4,
+    "forks_count": 14,
+    "open_issues_count": 9,
+    "created_at": "2017-01-03T09:38:05Z",
+    "updated_at": "2026-02-12T09:49:19Z",
+    "pushed_at": "2026-02-12T09:49:06Z",
+    "topics": [
+      "cozy",
+      "cozy-v3",
+      "settings",
+      "spa"
+    ],
+    "license": {
+      "key": "agpl-3.0",
+      "name": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "url": "https://api.github.com/licenses/agpl-3.0",
+      "node_id": "MDc6TGljZW5zZTE="
+    },
+    "owner": {
+      "login": "linagora",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1230365?v=4",
+      "html_url": "https://github.com/linagora"
+    }
+  },
+  {
+    "id": 117660744,
+    "name": "cozy-contacts",
+    "full_name": "cozy/cozy-contacts",
+    "description": "Contact manager for Cozy Cloud",
+    "html_url": "https://github.com/cozy/cozy-contacts",
+    "homepage": "",
+    "language": "JavaScript",
+    "stargazers_count": 12,
+    "watchers_count": 12,
+    "forks_count": 29,
+    "open_issues_count": 16,
+    "created_at": "2018-01-16T09:12:18Z",
+    "updated_at": "2026-02-12T12:51:54Z",
+    "pushed_at": "2026-02-12T12:51:51Z",
+    "topics": [],
+    "license": {
+      "key": "agpl-3.0",
+      "name": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "url": "https://api.github.com/licenses/agpl-3.0",
+      "node_id": "MDc6TGljZW5zZTE="
+    },
+    "owner": {
+      "login": "cozy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7690525?v=4",
+      "html_url": "https://github.com/cozy"
+    }
+  },
+  {
+    "id": 317668218,
+    "name": "cozy-pass-web",
+    "full_name": "cozy/cozy-pass-web",
+    "description": "The desktop vault (Windows, macOS, & Linux).",
+    "html_url": "https://github.com/cozy/cozy-pass-web",
+    "homepage": "https://bitwarden.com",
+    "language": "TypeScript",
+    "stargazers_count": 4,
+    "watchers_count": 4,
+    "forks_count": 5,
+    "open_issues_count": 6,
+    "created_at": "2020-12-01T21:08:44Z",
+    "updated_at": "2026-01-09T15:40:34Z",
+    "pushed_at": "2025-11-06T08:40:41Z",
+    "topics": [],
+    "license": {
+      "key": "gpl-3.0",
+      "name": "GNU General Public License v3.0",
+      "spdx_id": "GPL-3.0",
+      "url": "https://api.github.com/licenses/gpl-3.0",
+      "node_id": "MDc6TGljZW5zZTk="
+    },
+    "owner": {
+      "login": "cozy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7690525?v=4",
+      "html_url": "https://github.com/cozy"
+    }
+  },
+  {
+    "id": 729063193,
+    "name": "cozy-photos",
+    "full_name": "cozy/cozy-photos",
+    "description": null,
+    "html_url": "https://github.com/cozy/cozy-photos",
+    "homepage": null,
+    "language": "JavaScript",
+    "stargazers_count": 0,
+    "watchers_count": 0,
+    "forks_count": 2,
+    "open_issues_count": 5,
+    "created_at": "2023-12-08T10:21:36Z",
+    "updated_at": "2025-11-24T10:38:28Z",
+    "pushed_at": "2025-11-24T10:38:25Z",
+    "topics": [],
+    "license": {
+      "key": "agpl-3.0",
+      "name": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "url": "https://api.github.com/licenses/agpl-3.0",
+      "node_id": "MDc6TGljZW5zZTE="
+    },
+    "owner": {
+      "login": "cozy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7690525?v=4",
+      "html_url": "https://github.com/cozy"
+    }
+  },
+  {
+    "id": 98305803,
+    "name": "cozy-store",
+    "full_name": "cozy/cozy-store",
+    "description": "Marketplace app for the Cozy platform",
+    "html_url": "https://github.com/cozy/cozy-store",
+    "homepage": "",
+    "language": "JavaScript",
+    "stargazers_count": 7,
+    "watchers_count": 7,
+    "forks_count": 13,
+    "open_issues_count": 17,
+    "created_at": "2017-07-25T12:52:23Z",
+    "updated_at": "2026-02-12T13:32:23Z",
+    "pushed_at": "2026-02-12T13:31:35Z",
+    "topics": [],
+    "license": {
+      "key": "agpl-3.0",
+      "name": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "url": "https://api.github.com/licenses/agpl-3.0",
+      "node_id": "MDc6TGljZW5zZTE="
+    },
+    "owner": {
+      "login": "cozy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7690525?v=4",
+      "html_url": "https://github.com/cozy"
+    }
+  },
+  {
+    "id": 898558855,
+    "name": "cozy-twakechat",
+    "full_name": "cozy/cozy-twakechat",
+    "description": null,
+    "html_url": "https://github.com/cozy/cozy-twakechat",
+    "homepage": null,
+    "language": "JavaScript",
+    "stargazers_count": 0,
+    "watchers_count": 0,
+    "forks_count": 1,
+    "open_issues_count": 1,
+    "created_at": "2024-12-04T15:59:08Z",
+    "updated_at": "2026-02-12T12:52:21Z",
+    "pushed_at": "2026-02-12T12:51:17Z",
+    "topics": [],
+    "license": {
+      "key": "agpl-3.0",
+      "name": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "url": "https://api.github.com/licenses/agpl-3.0",
+      "node_id": "MDc6TGljZW5zZTE="
+    },
+    "owner": {
+      "login": "cozy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7690525?v=4",
+      "html_url": "https://github.com/cozy"
+    }
+  },
+  {
+    "id": 898554046,
+    "name": "cozy-twakemail",
+    "full_name": "cozy/cozy-twakemail",
+    "description": null,
+    "html_url": "https://github.com/cozy/cozy-twakemail",
+    "homepage": null,
+    "language": "JavaScript",
+    "stargazers_count": 0,
+    "watchers_count": 0,
+    "forks_count": 1,
+    "open_issues_count": 1,
+    "created_at": "2024-12-04T15:49:13Z",
+    "updated_at": "2026-02-12T12:52:18Z",
+    "pushed_at": "2026-02-12T12:51:24Z",
+    "topics": [],
+    "license": {
+      "key": "agpl-3.0",
+      "name": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "url": "https://api.github.com/licenses/agpl-3.0",
+      "node_id": "MDc6TGljZW5zZTE="
+    },
+    "owner": {
+      "login": "cozy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7690525?v=4",
+      "html_url": "https://github.com/cozy"
+    }
+  }
+]
