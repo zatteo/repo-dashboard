@@ -36,7 +36,7 @@ const TRACKED_PACKAGES: TrackedPackage[] = [
   { name: 'jest', targetVersion: '29.7.0' },
   { name: 'prettier' },
   { name: 'typescript' },
-  { name: 'react' },
+  { name: 'react', targetVersion: '18.0.0' },
   { name: 'cozy-client' },
   { name: 'cozy-ui' },
 ];
