@@ -3,15 +3,15 @@
  */
 
 interface ChartContainerProps {
-	title: string
-	children: React.ReactNode
+  title: string;
+  children: React.ReactNode;
 }
 
 export function ChartContainer({ title, children }: ChartContainerProps) {
-	return (
-		<div>
-			<h3 className="text-xl font-semibold text-white mb-4">{title}</h3>
-			{children}
-		</div>
-	)
+  return (
+    <div>
+      <h3 className="text-xl font-semibold text-white mb-4">{title}</h3>
+      {children}
+    </div>
+  );
 }
