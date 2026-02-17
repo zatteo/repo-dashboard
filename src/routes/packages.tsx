@@ -31,7 +31,7 @@ interface TrackedPackage {
 
 const TRACKED_PACKAGES: TrackedPackage[] = [
   { name: 'node', targetVersion: '20.0.0' },
-  { name: 'yarn', targetVersion: '1.22.0' },
+  { name: 'yarn', targetVersion: '4.0.0' },
   { name: '@rsbuild/core', targetVersion: '1.5.0' },
   { name: 'jest', targetVersion: '29.7.0' },
   { name: 'prettier' },
