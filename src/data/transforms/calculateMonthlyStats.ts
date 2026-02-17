@@ -95,15 +95,19 @@ export function calculateWorkflowMonthlyStats(
 
 	// Aggregate data by month
 	runs.forEach((run) => {
-		const key = getMonthKey(run.created_at)
+		// Filter out unrealistic duration values (likely data errors)
+		// A reasonable workflow run should not take more than 24 hours (86400 seconds)
+		if (run.duration_seconds > 0 && run.duration_seconds < 86400) {
+			const key = getMonthKey(run.created_at)
 
-		if (!monthlyMap.has(key)) {
-			monthlyMap.set(key, { total: 0, count: 0 })
+			if (!monthlyMap.has(key)) {
+				monthlyMap.set(key, { total: 0, count: 0 })
+			}
+
+			const stats = monthlyMap.get(key)!
+			stats.total += run.duration_seconds
+			stats.count++
 		}
-
-		const stats = monthlyMap.get(key)!
-		stats.total += run.duration_seconds
-		stats.count++
 	})
 
 	// Fill in missing months for the last 12 months
