@@ -8,14 +8,19 @@ import {
 import { Package } from 'lucide-react';
 import { PageHeader } from '../components/layout/PageHeader';
 import { PageLayout } from '../components/layout/PageLayout';
+import { useRepositoryFilter } from '../context/RepositoryFilterContext';
 import { getPackages } from '../data/packages';
+import { getRepositories } from '../data/repositories';
 import { getVersionColorClass } from '../utils/packageUtils';
 
 export const Route = createFileRoute('/packages')({
   component: PackagesPage,
   loader: async () => {
-    const packages = await getPackages();
-    return { packages };
+    const [packages, repositories] = await Promise.all([
+      getPackages(),
+      getRepositories(),
+    ]);
+    return { packages, repositories };
   },
 });
 
@@ -43,13 +48,24 @@ const TRACKED_PACKAGES: TrackedPackage[] = [
 ];
 
 function PackagesPage() {
-  const { packages } = Route.useLoaderData();
+  const { packages, repositories } = Route.useLoaderData();
+  const { showFavoritesOnly } = useRepositoryFilter();
+
+  // Filter packages based on favorites setting
+  const filteredPackages = showFavoritesOnly
+    ? packages.filter((pkg) => {
+        const repo = repositories.find(
+          (r) => r.full_name === pkg.repo_full_name,
+        );
+        return repo?.favorite;
+      })
+    : packages;
 
   // Transform data for the table
   const tableData: PackageRow[] = TRACKED_PACKAGES.map((pkg) => {
     const row: PackageRow = { packageName: pkg.name };
 
-    packages.forEach((repoData) => {
+    filteredPackages.forEach((repoData) => {
       let version: string | null = null;
 
       // Handle special cases for node and yarn
@@ -94,7 +110,7 @@ function PackagesPage() {
         );
       },
     }),
-    ...packages.map((repo) =>
+    ...filteredPackages.map((repo) =>
       columnHelper.accessor(repo.repo_name, {
         header: repo.repo_name,
         cell: (info) => {
@@ -127,7 +143,7 @@ function PackagesPage() {
     <PageLayout>
       <PageHeader
         title="Packages"
-        description={`Compare package versions across ${packages.length} repositories`}
+        description={`Compare package versions across ${filteredPackages.length} repositories`}
       />
 
       <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl overflow-hidden">
@@ -182,8 +198,8 @@ function PackagesPage() {
       <div className="mt-6 flex items-center gap-2 text-sm text-gray-400">
         <Package className="w-4 h-4" aria-hidden="true" />
         <span>
-          Tracking {TRACKED_PACKAGES.length} key packages across all
-          repositories
+          Tracking {TRACKED_PACKAGES.length} key packages across{' '}
+          {filteredPackages.length} repositories
         </span>
       </div>
     </PageLayout>

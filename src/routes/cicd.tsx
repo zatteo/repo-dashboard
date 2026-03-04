@@ -6,6 +6,7 @@ import { ChartContainer } from '../components/charts/ChartContainer';
 import { WorkflowChart } from '../components/charts/WorkflowChart';
 import { PageHeader } from '../components/layout/PageHeader';
 import { PageLayout } from '../components/layout/PageLayout';
+import { useRepositoryFilter } from '../context/RepositoryFilterContext';
 import { getRepositories } from '../data/repositories';
 import { calculateWorkflowMonthlyStats } from '../data/transforms/calculateMonthlyStats';
 import { calculateWorkflowStats } from '../data/transforms/calculateWorkflowStats';
@@ -25,10 +26,16 @@ export const Route = createFileRoute('/cicd')({
 
 function CICDDashboard() {
   const { workflowRuns, repositories } = Route.useLoaderData();
+  const { showFavoritesOnly } = useRepositoryFilter();
+
+  // Filter repositories based on favorites setting
+  const filteredRepositories = showFavoritesOnly
+    ? repositories.filter((repo) => repo.favorite)
+    : repositories;
 
   // Group workflow runs by repository and sort by date
   const runsByRepo = groupByRepository(
-    repositories,
+    filteredRepositories,
     workflowRuns,
     undefined,
     (a, b) =>
@@ -42,7 +49,7 @@ function CICDDashboard() {
         description="GitHub Actions workflow run times and performance metrics"
       />
 
-      {repositories.map((repo) => {
+      {filteredRepositories.map((repo) => {
         const repoRuns = runsByRepo[repo.full_name] || [];
         if (repoRuns.length === 0) return null;
 

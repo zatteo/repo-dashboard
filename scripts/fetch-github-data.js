@@ -157,7 +157,7 @@ async function main() {
   const allWorkflowRuns = []
   const allPackages = []
 
-  for (const { owner, repo } of config.repositories) {
+  for (const { owner, repo, favorite } of config.repositories) {
     try {
       const data = await fetchRepoData(owner, repo)
 
@@ -183,7 +183,8 @@ async function main() {
           login: data.owner.login,
           avatar_url: data.owner.avatar_url,
           html_url: data.owner.html_url
-        }
+        },
+        favorite: favorite
       }
 
       results.push(repoData)

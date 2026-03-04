@@ -24,6 +24,7 @@ export interface GitHubRepository {
     avatar_url: string;
     html_url: string;
   };
+  favorite?: boolean;
 }
 
 export interface GitHubRelease {

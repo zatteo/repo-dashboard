@@ -5,6 +5,7 @@ import { ChartContainer } from '../components/charts/ChartContainer';
 import { ReleaseChart } from '../components/charts/ReleaseChart';
 import { PageHeader } from '../components/layout/PageHeader';
 import { PageLayout } from '../components/layout/PageLayout';
+import { useRepositoryFilter } from '../context/RepositoryFilterContext';
 import { getReleases } from '../data/releases';
 import { getRepositories } from '../data/repositories';
 import { calculateMonthlyReleaseStats } from '../data/transforms/calculateMonthlyStats';
@@ -27,10 +28,16 @@ export const Route = createFileRoute('/releases')({
 
 function Releases() {
   const { releases, repositories } = Route.useLoaderData();
+  const { showFavoritesOnly } = useRepositoryFilter();
+
+  // Filter repositories based on favorites setting
+  const filteredRepositories = showFavoritesOnly
+    ? repositories.filter((repo) => repo.favorite)
+    : repositories;
 
   // Group releases by repository, filtering out drafts and sorting by date
   const releasesByRepo = groupByRepository(
-    repositories,
+    filteredRepositories,
     releases,
     (release) => !release.draft,
     (a, b) =>
@@ -42,10 +49,10 @@ function Releases() {
     <PageLayout>
       <PageHeader
         title="Releases"
-        description="Track releases across all monitored repositories"
+        description={`Track releases across ${filteredRepositories.length} monitored repositories`}
       />
 
-      {repositories.map((repo) => {
+      {filteredRepositories.map((repo) => {
         const repoReleases = releasesByRepo[repo.full_name] || [];
         if (repoReleases.length === 0) return null;
 

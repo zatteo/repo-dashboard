@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { AlertCircle, Clock } from 'lucide-react';
 import { RepositoryListItem } from '../components/cards/RepositoryListItem';
 import { PageLayout } from '../components/layout/PageLayout';
+import { useRepositoryFilter } from '../context/RepositoryFilterContext';
 import { getMetadata } from '../data/metadata';
 import { getRepositories } from '../data/repositories';
 
@@ -18,6 +19,7 @@ export const Route = createFileRoute('/')({
 
 function Dashboard() {
   const { repositories, metadata } = Route.useLoaderData();
+  const { showFavoritesOnly } = useRepositoryFilter();
 
   const formatLastUpdated = (dateString: string | null) => {
     if (!dateString) return 'Unknown';
@@ -30,6 +32,11 @@ function Dashboard() {
     });
   };
 
+  // Filter repositories based on favorites setting
+  const filteredRepositories = showFavoritesOnly
+    ? repositories.filter((repo) => repo.favorite)
+    : repositories;
+
   return (
     <PageLayout>
       <div className="mb-12">
@@ -37,7 +44,7 @@ function Dashboard() {
           Repository Dashboard
         </h1>
         <p className="text-gray-400 text-lg mb-2">
-          Monitoring {repositories.length} public repositories
+          Monitoring {filteredRepositories.length} public repositories
         </p>
         {metadata.lastUpdated && (
           <div className="flex items-center gap-2 text-gray-500 text-sm">
@@ -47,7 +54,7 @@ function Dashboard() {
         )}
       </div>
 
-      {repositories.length === 0 ? (
+      {filteredRepositories.length === 0 ? (
         <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-12 text-center">
           <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h2 className="text-2xl font-semibold text-white mb-2">
@@ -66,7 +73,7 @@ function Dashboard() {
           className="grid grid-cols-1 gap-6 list-none p-0 m-0"
           aria-label="Repository list"
         >
-          {repositories.map((repo) => (
+          {filteredRepositories.map((repo) => (
             <li key={repo.id}>
               <RepositoryListItem repository={repo} />
             </li>

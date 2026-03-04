@@ -20,3 +20,4 @@ dist/
 
 # Cached data
 data/cache/
+public/data/cache

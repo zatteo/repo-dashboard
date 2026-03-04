@@ -1,6 +1,7 @@
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { RepositoryFilterProvider } from './context/RepositoryFilterContext';
 import { routeTree } from './routeTree.gen';
 import './styles.css';
 
@@ -37,6 +38,8 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <RepositoryFilterProvider>
+      <RouterProvider router={router} />
+    </RepositoryFilterProvider>
   </StrictMode>,
 );

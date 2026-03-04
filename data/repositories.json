@@ -2,43 +2,53 @@
   "repositories": [
     {
       "owner": "cozy",
-      "repo": "cozy-home"
+      "repo": "cozy-home",
+      "favorite": true
     },
     {
       "owner": "cozy",
-      "repo": "cozy-drive"
+      "repo": "cozy-drive",
+      "favorite": true
     },
     {
       "owner": "cozy",
-      "repo": "cozy-notes"
+      "repo": "cozy-notes",
+      "favorite": false
     },
     {
       "owner": "cozy",
-      "repo": "cozy-settings"
+      "repo": "cozy-settings",
+      "favorite": true
     },
     {
       "owner": "cozy",
-      "repo": "cozy-contacts"
+      "repo": "cozy-contacts",
+      "favorite": false
     },
     {
       "owner": "cozy",
-      "repo": "cozy-pass-web"
+      "repo": "cozy-pass-web",
+      "favorite": false
     },
     {
       "owner": "cozy",
-      "repo": "cozy-photos"
+      "repo": "cozy-photos",
+      "favorite": false
     },
     {
       "owner": "cozy",
-      "repo": "cozy-store"
+      "repo": "cozy-store",
+      "favorite": false
     },
     {
       "owner": "cozy",
-      "repo": "cozy-twakechat"
+      "repo": "cozy-twakechat",
+      "favorite": true
     },
     {
       "owner": "cozy",
-      "repo": "cozy-twakemail"
+      "repo": "cozy-twakemail",
+      "favorite": true
     }
   ]
 }
