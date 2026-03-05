@@ -35,13 +35,15 @@ interface TrackedPackage {
 }
 
 const TRACKED_PACKAGES: TrackedPackage[] = [
-  { name: 'node', targetVersion: '20.0.0' },
+  { name: 'node', targetVersion: '24.0.0' },
   { name: 'yarn', targetVersion: '4.0.0' },
+  { name: '@swc/core', targetVersion: '1.15.18' },
   { name: '@rsbuild/core', targetVersion: '1.5.0' },
   { name: 'rsbuild-config-cozy-app', targetVersion: '0.7.1' },
-  { name: 'jest', targetVersion: '29.7.0' },
-  { name: 'prettier' },
-  { name: 'typescript' },
+  { name: 'eslint-config-cozy-app', targetVersion: '7.0.0' },
+  { name: 'jest', targetVersion: '30.0.0' },
+  { name: 'eslint', targetVersion: '10.0.0' },
+  { name: 'typescript', targetVersion: '5.9.3' },
   { name: 'react', targetVersion: '18.0.0' },
   { name: 'cozy-client' },
   { name: 'cozy-ui' },
