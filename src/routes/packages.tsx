@@ -5,6 +5,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { useMemo } from 'react';
 import { Package } from 'lucide-react';
 import { PageHeader } from '../components/layout/PageHeader';
 import { PageLayout } from '../components/layout/PageLayout';
@@ -23,6 +24,8 @@ export const Route = createFileRoute('/packages')({
     return { packages, repositories };
   },
 });
+
+const columnHelper = createColumnHelper<PackageRow>();
 
 interface PackageRow {
   packageName: string;
@@ -89,9 +92,7 @@ function PackagesPage() {
   });
 
   // Create columns dynamically based on repositories
-  const columnHelper = createColumnHelper<PackageRow>();
-
-  const columns = [
+  const columns = useMemo(() => [
     columnHelper.accessor('packageName', {
       header: 'Package',
       cell: (info) => (
@@ -134,7 +135,7 @@ function PackagesPage() {
         },
       }),
     ),
-  ];
+  ], [filteredPackages]);
 
   const table = useReactTable({
     data: tableData,
