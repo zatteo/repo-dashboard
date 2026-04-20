@@ -6,6 +6,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useMemo } from 'react';
+
 import { Package } from 'lucide-react';
 import { PageHeader } from '../components/layout/PageHeader';
 import { PageLayout } from '../components/layout/PageLayout';
@@ -13,6 +14,8 @@ import { useRepositoryFilter } from '../context/RepositoryFilterContext';
 import { getPackages } from '../data/packages';
 import { getRepositories } from '../data/repositories';
 import { getVersionColorClass } from '../utils/packageUtils';
+
+const coreRowModel = getCoreRowModel();
 
 export const Route = createFileRoute('/packages')({
   component: PackagesPage,
@@ -63,18 +66,20 @@ function PackagesPage() {
   const { packages, repositories } = Route.useLoaderData();
   const { showFavoritesOnly } = useRepositoryFilter();
 
-  // Filter packages based on favorites setting
-  const filteredPackages = showFavoritesOnly
-    ? packages.filter((pkg) => {
-        const repo = repositories.find(
-          (r) => r.full_name === pkg.repo_full_name,
-        );
-        return repo?.favorite;
-      })
-    : packages;
+  const filteredPackages = useMemo(
+    () =>
+      showFavoritesOnly
+        ? packages.filter((pkg) => {
+            const repo = repositories.find(
+              (r) => r.full_name === pkg.repo_full_name,
+            );
+            return repo?.favorite;
+          })
+        : packages,
+    [showFavoritesOnly, packages, repositories],
+  );
 
-  // Transform data for the table
-  const tableData: PackageRow[] = TRACKED_PACKAGES.map((pkg) => {
+  const tableData: PackageRow[] = useMemo(() => TRACKED_PACKAGES.map((pkg) => {
     const row: PackageRow = { packageName: pkg.name };
 
     filteredPackages.forEach((repoData) => {
@@ -95,7 +100,7 @@ function PackagesPage() {
     });
 
     return row;
-  });
+  }), [filteredPackages]);
 
   // Create columns dynamically based on repositories
   const columns = useMemo(() => [
@@ -146,7 +151,7 @@ function PackagesPage() {
   const table = useReactTable({
     data: tableData,
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    getCoreRowModel: coreRowModel,
   });
 
   return (
