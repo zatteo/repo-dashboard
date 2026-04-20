@@ -43,8 +43,8 @@ export default function Header({ repositories = [] }: HeaderProps) {
           />
           <span className="text-sm">
             {showFavoritesOnly
-              ? 'Showing Favorites Only'
-              : 'Show All Repositories'}
+              ? 'Show all packages'
+              : 'Show only favorite packages'}
           </span>
         </button>
 
