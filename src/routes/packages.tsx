@@ -50,7 +50,13 @@ const TRACKED_PACKAGES: TrackedPackage[] = [
   { name: 'react', targetVersion: '18.0.0' },
   { name: 'cozy-client' },
   { name: 'cozy-ui' },
+  { name: 'cozy-ui-plus' },
   { name: 'cozy-bar' },
+  { name: 'cozy-sharing' },
+  { name: 'cozy-search' },
+  { name: 'cozy-viewer' },
+  { name: 'cozy-harvest-lib' },
+  { name: 'cozy-dataproxy-lib' }
 ];
 
 function PackagesPage() {
