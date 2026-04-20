@@ -49,6 +49,11 @@
       "owner": "cozy",
       "repo": "cozy-twakemail",
       "favorite": true
+    },
+    {
+      "owner": "linagora",
+      "repo": "cozy-admin",
+      "favorite": true
     }
   ]
 }
